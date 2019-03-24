@@ -44,9 +44,10 @@ var TelemetrySyncManager = {
             headersParam["Authorization"] = 'Bearer ' + Telemetry.config.authtoken;
 
         var fullPath = Telemetry.config.host + Telemetry.config.apislug + Telemetry.config.endpoint;
-        headersParam['dataType'] = 'json';
+        /*
+		headersParam['dataType'] = 'json';
         headersParam["Content-Type"] = "application/json";
-        jQuery.ajax({
+		jQuery.ajax({
             url: fullPath,
             type: "POST",
             headers: headersParam,
@@ -61,6 +62,39 @@ var TelemetrySyncManager = {
                 console.log("Error while Telemetry sync to server: ", error);
             }
         });
+		*/
+		var iEVersion = -1;
+		if(navigator.appName == 'Microsoft Internet Explorer'){
+			var userAgent = navigator.userAgent;
+			var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			if (re.exec(userAgent) != null){
+				iEVersion = parseFloat( RegExp.$1 );
+			}
+		}
+		
+		var xhr = new XMLHttpRequest();
+		if(iEVersion != -1 && iEVersion < 7){
+			xhr = new ActiveXObject("MSXML2.XMLHTTP.3.0");
+		}
+		
+		xhr.open('POST', fullPath);
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.onload = function() {
+			if (xhr.status === 200) {
+				console.log("Telemetry API success", xhr.responseText);
+				
+			}
+			else {
+				instance.updateEventStack(telemetryData);
+				if (xhr.status == 403) {
+					console.error("Authentication error: ", xhr.responseText);
+				} else {
+					console.log("Error while Telemetry sync to server: ", xhr.responseText);
+				}
+			}
+		};
+		
+		xhr.send(JSON.stringify(telemetryObj));
     }
 }
 if (typeof document != 'undefined') {

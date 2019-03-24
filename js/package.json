@@ -38,7 +38,7 @@
         "test": "karma start karma.renderer.config.js",
         "codecov": "codecov",
         "test-sdk": "grunt renderer-telemetryV3",
-        "build": "node_modules/.bin/rimraf ./dist && gulp build-telemetry-schema && grunt build-telemetry-lib && node_modules/.bin/cpy package.json ./dist && node_modules/.bin/cpy README.md ./dist"
+        "build": "node_modules\\.bin\\rimraf dist && gulp build-telemetry-schema && grunt build-telemetry-lib && node_modules\\.bin\\cpy package.json dist && node_modules\\.bin\\cpy README.md dist"
     },
     "repository": {
         "type": "git",

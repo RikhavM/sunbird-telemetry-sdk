@@ -6,7 +6,10 @@
 
 // To support for node server environment 
 if (typeof require === "function") {
-    var Ajv = require('ajv')
+   var Ajv = require('ajv');
+	
+	//To reduce size removing dependancy on ua-parser-js and userAgent will be defaulted to `defaultUserAgent` value
+    //var UAParser = require("ua-parser-js");
 }
 
 
@@ -360,11 +363,15 @@ var Telemetry = (function() {
         if (telemetryInstance.runningEnv === 'client') {
             if (!message.context.did) {
                 if (!Telemetry.fingerPrintId) {
-                    Telemetry.getFingerPrint(function(result, components) {
+					//To reduce size removing dependancy on fingerprintjs2, fingerPrintId and did will be defaulted to `defaultDId` value
+                 /*   Telemetry.getFingerPrint(function(result, components) {
                         message.context.did = result;
                         Telemetry.fingerPrintId = result;
                         dispatcher.dispatch(message);
-                    })
+                    })*/
+					message.context.did = "defaultDId";
+					Telemetry.fingerPrintId = "defaultDId";
+					dispatcher.dispatch(message);
                 } else {
                     message.context.did = Telemetry.fingerPrintId;
                     dispatcher.dispatch(message);
@@ -495,9 +502,11 @@ var Telemetry = (function() {
     var FPoptions = {
         preprocessor: function (key, value) {
             if (key == "userAgent") {
-                var parser = new UAParser(value); // https://github.com/faisalman/ua-parser-js
+				//To reduce size removing dependancy on ua-parser-js and userAgent will be defaulted to `defaultUserAgent` value
+                /*var parser = new UAParser(value); // https://github.com/faisalman/ua-parser-js
                 var userAgentMinusVersion = parser.getOS().name + ' ' + parser.getBrowser().name
-                return userAgentMinusVersion
+                return defaultUserAgent*/
+				return "defaultUserAgent";
             }
             return value
         },
@@ -547,9 +556,10 @@ var Telemetry = (function() {
         EXCLUDED: 'excluded'
     }
     this.telemetry.getFingerPrint = function (cb) {
-        Fingerprint2.getV18(FPoptions, function (result, components) {
+		//To reduce size removing dependancy on fingerprintjs2, fingerPrintId and did will be defaulted to `defaultDId` value
+        /*Fingerprint2.getV18(FPoptions, function (result, components) {
             if (cb) cb(result, components)
-        })
+        })*/
     }
     if (typeof Object.assign != 'function') {
         instance.objectAssign();
